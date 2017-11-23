@@ -27,23 +27,17 @@ def show(img, filename=None, save=False):
 
 def show_plot(iteration,loss):
     plt.plot(iteration,loss)
-    plt.show()
-    
+    plt.xlabel("Iterations")
+    plt.ylabel("Loss")
+    plt.savefig('output.png')
 
-def p1a():
+def train(net):
     trainset = LFWDataset(train=True,
                       transform=transforms.Compose([transforms.Scale((128,128)),
                                                                       transforms.ToTensor()
                                                                       ]))
-    trainloader = DataLoader(trainset, batch_size=1, shuffle=True, num_workers=2)
+    trainloader = DataLoader(trainset, batch_size=8, shuffle=True, num_workers=0)
 
-    testset = LFWDataset(test=True,
-                         transform=transforms.Compose([transforms.Scale((128, 128)),
-                                                                          transforms.ToTensor()
-                                                                          ]))
-    testloader = DataLoader(testset, batch_size=1, shuffle=True, num_workers=2)
-    
-    net = SiameseNet().cuda()
     criterion = nn.CrossEntropyLoss()
     learning_rate = 1e-6
     optimizer = optim.Adam(net.parameters(), lr=learning_rate)
@@ -51,35 +45,44 @@ def p1a():
     counter = []
     loss_history = [] 
     iteration_number= 0
-    epochs = 2
+    epochs = 10
     
     for epoch in range(epochs):
         for i, data in enumerate(trainloader,0):
             img0, img1 , label = data 
-
-    #         print(img0)
-            img0 = Variable(img0).cuda()
-            img1 = Variable(img1).cuda()
-            label = Variable(label).cuda()
-    #         img0, img1 , label = Variable(img0).cuda(), Variable(img1).cuda() , Variable(label).cuda()
+            img0, img1 , label = Variable(img0).cuda(), Variable(img1).cuda() , Variable(label).cuda()
 
             output = net(img0,img1)
-
-    #         print(output)
+            output = torch.cat((output, 1-output), 1)
 
             optimizer.zero_grad()
-            loss = criterion(output, label)
-    #         print(loss)
+            loss = criterion.forward(output, label)
             loss.backward()
             optimizer.step()
 
             if i % 10 == 0 :
-                print("Epoch number {}\n Current loss {}\n".format(epoch,loss.data[0]))
+                print("Epoch number {}\n {}\n Current loss {}\n".format(epoch,iteration_number,loss.data[0]))
                 iteration_number += 10
                 counter.append(iteration_number)
                 loss_history.append(loss.data[0])
 
     show_plot(counter,loss_history)
+
+def test(net):
+    testset = LFWDataset(test=True,
+                         transform=transforms.Compose([transforms.Scale((128, 128)),
+                                                                          transforms.ToTensor()
+                                                                          ]))
+    testloader = DataLoader(testset, batch_size=8, shuffle=True, num_workers=0)
+    
+    
+    
+def p1a():
+    net = SiameseNet().cuda()
+    train(net)
+    test(net)
+   
+    
 
     
     
