@@ -6,6 +6,9 @@ from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from skimage import transform as tf
+from PIL import Image
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,10 +19,46 @@ from LFWDataset import LFWDataset
 from SiameseNet import SiameseNet
 
 
-class config():
+class Config():
     train_batch_size = 64
     train_number_epochs = 30
 
+def data_aug(im, augmentation_prob=0.7):
+    #parameters
+    #  im - PIL image
+    
+    if np.random.random_sample() < augmentation_prob:
+        x = np.random.random_sample()
+        if x < 0.25:
+            return Image.fromarray(np.fliplr(np.array(im)))
+        elif x < 0.5:
+            return Image.fromarray((255* tf.rotate(np.array(im), np.random.randint(-30, 31), mode='constant')).astype('uint8'))
+        elif x < 0.75:
+            translate = tf.AffineTransform(translation=
+                                           (np.random.randint(-10, 11), np.random.randint(-10, 11))
+                                          )
+            return Image.fromarray((255*tf.warp(im, translate, mode='constant')).astype('uint8'))
+        else:
+            ratio = 0.7+0.6*np.random.random()
+            scaled = tf.rescale(np.array(im), ratio, mode='constant')
+            s, _,_ = scaled.shape
+
+            if ratio >= 1:
+                left = s//2 - 125
+                right = s//2 + 125
+                bottom = s//2 - 125
+                top = s//2 + 125
+                scaled = scaled[left:right, bottom:top]
+            else:
+                pad = (250-s)//2
+                scaled = np.lib.pad(scaled, ((pad, pad), (pad, pad), (0, 0)), 'constant')
+                scaled = tf.resize(scaled, (250,250), mode='constant')
+                
+            return Image.fromarray((255*scaled).astype('uint8'))
+    else:
+        return im    
+    
+    
 def show_plot(iteration,loss, filename='loss.png', save=False):
     plt.plot(iteration,loss)
     plt.xlabel("Iterations")
@@ -27,8 +66,6 @@ def show_plot(iteration,loss, filename='loss.png', save=False):
 #     plt.show()
     if save:
         plt.savefig(filename)
-
-def train_aug(savemodel=False, model="model")
         
         
 def train(savemodel=False, model="model"):
@@ -36,10 +73,10 @@ def train(savemodel=False, model="model"):
     net = SiameseNet().cuda()
     
     trainset = LFWDataset(train=True,
-                      transform=transforms.Compose([transforms.Scale((128,128)),
+                      transform=transforms.Compose([data_aug, transforms.Scale((128,128)),
                                                       transforms.ToTensor()
                                                       ]))
-    trainloader = DataLoader(trainset, batch_size=config.train_batch_size, shuffle=True, num_workers=0)
+    trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=0)
 
     criterion = nn.BCELoss()
     learning_rate = 1e-6
@@ -49,7 +86,7 @@ def train(savemodel=False, model="model"):
     loss_history = [] 
     iteration_number= 0
     
-    for epoch in range(config.train_number_epochs):
+    for epoch in range(Config.train_number_epochs):
         for i, data in enumerate(trainloader,0):
             img0, img1 , label = data      
             img0, img1 , label = Variable(img0).cuda(), Variable(img1).cuda() , Variable(label).cuda()
@@ -81,12 +118,12 @@ def test(loadmodel=False, model="model"):
                       transform=transforms.Compose([transforms.Scale((128,128)),
                                                       transforms.ToTensor()
                                                       ]))
-    trainloader = DataLoader(trainset, batch_size=config.train_batch_size, shuffle=True, num_workers=2)
+    trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=2)
     testset = LFWDataset(test=True,
                      transform=transforms.Compose([transforms.Scale((128, 128)),
                                                       transforms.ToTensor()
                                                       ]))
-    testloader = DataLoader(testset, batch_size=config.train_batch_size, shuffle=True, num_workers=2)
+    testloader = DataLoader(testset, batch_size=Config.train_batch_size, shuffle=True, num_workers=2)
     
     if loadmodel:
         net.load_state_dict(torch.load(model))
@@ -136,9 +173,9 @@ def p1a():
     args = parser.parse_args()
     
     if args.save:
-        train(savemodel=True, model='p1ai')
+        train(savemodel=True, model='p1a_aug')
     if args.load:
-        test(loadmodel=True, model='p1ai')
+        test(loadmodel=True, model='p1a_aug')
     
     
 if __name__ == "__main__":
