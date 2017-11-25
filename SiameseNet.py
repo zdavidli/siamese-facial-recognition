@@ -5,8 +5,14 @@ import torch.nn.functional as F
 
 class SiameseNet(nn.Module):
 
-    def __init__(self):
+    def __init__(self, p1a=False, p1b=False):
         super(SiameseNet, self).__init__()
+        if p1a and p1b or (not p1a and not p1b):
+            raise ValueError("Must set exactly one of p1a or p1b")
+        
+        self.p1a = p1a
+        self.p1b = p1b
+        
         self.cnn = nn.Sequential(
             nn.Conv2d(3, 64, 5, stride=(1,1), padding=2),
             nn.ReLU(inplace=True),
@@ -47,8 +53,11 @@ class SiameseNet(nn.Module):
         return output
 
     def forward(self, input1, input2):
-        f1 = self.forward_once(input1)
-        f2 = self.forward_once(input2)
+        output1 = self.forward_once(input1)
+        output2 = self.forward_once(input2)
 #        print(f1, f2)
-        output = self.fc2(torch.cat((f1, f2), 1))
-        return output
+        if self.p1a:
+            output = self.fc2(torch.cat((output1, output2), 1))
+            return output
+        else:
+            return output1, output2
