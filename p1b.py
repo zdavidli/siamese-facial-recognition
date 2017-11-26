@@ -60,7 +60,7 @@ def train(aug, config, savemodel=False, model="model"):
     loss_history = []
     iteration_number= 0
 
-    for epoch in range(config.train_number_epochs):
+    for epoch in range(config.epochs):
         for i, data in enumerate(trainloader,0):
             img0, img1 , label = data
             img0, img1 , label = Variable(img0).cuda(), Variable(img1).cuda() , Variable(label).cuda()
