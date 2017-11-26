@@ -23,6 +23,7 @@ class Config():
     train_batch_size = 64
     train_number_epochs = 100
     margin = 10
+    threshold = 20
 
 def show_plot(iteration,loss, filename='loss.png', save=False):
     plt.figure(figsize=(10,4))
@@ -109,7 +110,7 @@ def test(loadmodel=False, model="model"):
         output1, output2 = net(img0,img1)
         dist = F.pairwise_distance(output1, output2)
         for x,y in zip(dist, label):
-            if (x.data[0]>=Config.margin and y.data[0]==1) or (x.data[0]<Config.margin and y.data[0]==0):
+            if (x.data[0]>=Config.threshold and y.data[0]==1) or (x.data[0]<Config.threshold and y.data[0]==0):
                 trainright+=1
             else:
                 trainwrong+=1
@@ -126,7 +127,7 @@ def test(loadmodel=False, model="model"):
         output1, output2 = net(img0,img1)
         dist = F.pairwise_distance(output1, output2)
         for x,y in zip(dist, label):
-            if (x.data[0]>=11 and y.data[0]==1) or (x.data[0]<11 and y.data[0]==0):
+            if (x.data[0]>= Config.threshold and y.data[0]==1) or (x.data[0]< Config.threshold and y.data[0]==0):
                 testright+=1
             else:
                 testwrong+=1
@@ -137,7 +138,9 @@ def test(loadmodel=False, model="model"):
 
 def p1b():
     parser = argparse.ArgumentParser(description='Process loading or saving.')
-    parser.add_argument('--aug', dest='aug', action='store_true')
+    parser.add_argument('--aug', '-a', dest='aug', action='store_true', help='toggle data augmentation')
+    parser.add_argument('--margin', '-m', dest='margin', action='store', type=float, help='Set custom margin (default 10')
+    parser.add_argument('--threshold', '-t', dest='threshold', action='store', type=float, help='Set custom threshold')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--load', dest='load', action='store',
                         type=str, help='File from which to load model')
@@ -145,6 +148,9 @@ def p1b():
                         type=str, help='File to save model to')
 
     args = parser.parse_args()
+
+    if args.margin:
+	
 
     if args.save:
         print("Training...")
