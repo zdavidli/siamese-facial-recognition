@@ -100,9 +100,11 @@ def test(loadmodel=False, model="model"):
         img0, img1, label = data
         img0, img1, label = Variable(img0).cuda(), Variable(img1).cuda(), Variable(label).cuda()
 
-        output = net(img0,img1)
-        for x,y in zip(output, label):
-            if (x.data[0]<=0.5 and y.data[0]==0) or (x.data[0]>0.5 and y.data[0]==1):
+        output1, output2 = net(img0,img1)
+        dist = F.pairwise_distance(output1, output2)
+        
+        for x,y in zip(dist, label):
+            if (x.data[0]>=11 and y.data[0]==1) or (x.data[0]<11 and y.data[0]==0):
                 trainright+=1
             else:
                 trainwrong+=1
@@ -116,9 +118,10 @@ def test(loadmodel=False, model="model"):
         img0, img1, label = data
         img0, img1, label = Variable(img0).cuda(), Variable(img1).cuda(), Variable(label).cuda()
 
-        output = net(img0,img1)
-        for x,y in zip(output, label):
-            if (x.data[0]<=0.5 and y.data[0]==0) or (x.data[0]>0.5 and y.data[0]==1):
+        output1, output2 = net(img0,img1)
+        dist = F.pairwise_distance(output1, output2)
+        for x,y in zip(dist, label):
+            if (x.data[0]>=11 and y.data[0]==1) or (x.data[0]<11 and y.data[0]==0):
                 testright+=1
             else:
                 testwrong+=1

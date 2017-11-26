@@ -26,7 +26,8 @@ class Config():
 def show_plot(iteration,loss, filename='loss.png', save=False):
     plt.plot(iteration,loss)
     plt.xlabel("Iterations")
-    plt.ylabel("Loss")
+    plt.ylabel("Binary Cross Entropy Loss")
+    plt.title("BCELoss over {} Training Epochs".format(Config.train_number_epochs))
 #     plt.show()
     if save:
         plt.savefig(filename)
@@ -37,7 +38,7 @@ def train(savemodel=False, model="model"):
     net = SiameseNet(p1a=True).cuda()
     
     trainset = LFWDataset(train=True,
-                      transform=transforms.Compose([data_aug, transforms.Scale((128,128)),
+                      transform=transforms.Compose([augmentation, transforms.Scale((128,128)),
                                                       transforms.ToTensor()
                                                       ]))
     trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=0)
