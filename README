@@ -47,13 +47,14 @@ Q1b. (without augmentation)
 
 To speed up training time, I used a learning rate of 1e-5, compared to 1e-6 in part a.
 
-I used 30 epochs -- the loss stabilizes within 30 epochs. A graph of my loss can be seen in
-contrastive.png.
+I used 30 epochs -- the loss stabilizes within 10 epochs, but accuracy on the training set is less than 0.8
+until we get to 25 epochs of training. Even so, the accuracy on the test set does not increase - it's stuck 
+at 50% the whole time. A graph of my loss can be seen in contrastive.png.
 
     Testing results:
         Loaded model: p1b
-        Accuracy on train set: 0.98
-        Accuracy on test set: 0.51
+        Accuracy on train set: 0.87
+        Accuracy on test set: 0.50
 
 Q1b.i. (with augmentation)
 
