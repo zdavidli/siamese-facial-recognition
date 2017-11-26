@@ -5,7 +5,6 @@ Computer Vision HW 3
 Q1a. (without augmentation)
 
 I used a learning rate of 1e-6.
-
 For this part, I used 30 epochs -- the loss stabilizes within 30 epochs. A graph of my loss can be seen in bceloss.png.
 Testing results:
     Loaded model: p1a
@@ -14,7 +13,9 @@ Testing results:
 
 Q1a.i. (with augmentation)
 
-With augmentation, I decided to allow each transform a 80% chance to occur (independently).
+With augmentation, I decided to allow each transform a 80% chance to occur (independently). Augmentations
+were done using skimage library functions.
+
 This time, since loss took longer to stabilize (due to the random augmentation), I used 100 training epochs. 
 A graph of my loss can be seen in bceloss_aug.png.
 Testing results:
@@ -28,7 +29,9 @@ How well did part a work on the training data? On the test data?
     The model appears to do very well when we test with training data but is basically indistinguishable
     from guessing on test data. It scores very close to 100% accuracy on training data but close to 50%
     on test data. This makes me think it's overfitting and just memorizing the training
-    data instead of actually learning structural similarities in the faces.
+    data instead of actually learning structural similarities in the faces. 
+    
+    Even when I saved tested models with less training epochs, I still had a big overfitting issue.
 
 Any ideas why or why not it worked well or didn't? Answer this question below in part c.
 
