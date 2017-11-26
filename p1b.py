@@ -20,10 +20,11 @@ from ContrastiveLoss import ContrastiveLoss
 from augmentation import augmentation
 
 class Config():
-    train_batch_size = 64
-    train_number_epochs = 100
-    margin = 10
-    threshold = 20
+    def __init__(self, batch_size=64, epochs=30, margin=10, threshold=20):
+        self.batch_size=batch_size
+        self.epochs = epochs
+        self.margin=margin
+        self.threshold = threshold
 
 def show_plot(iteration,loss, filename='loss.png', save=False):
     plt.figure(figsize=(10,4))
@@ -35,7 +36,7 @@ def show_plot(iteration,loss, filename='loss.png', save=False):
         plt.savefig(filename)
 
 
-def train(aug, savemodel=False, model="model"):
+def train(aug, config, savemodel=False, model="model"):
 
     net = SiameseNet(p1b=True).cuda()
 
@@ -49,9 +50,9 @@ def train(aug, savemodel=False, model="model"):
                           transform=transforms.Compose([transforms.Scale((128,128)),
                                                           transforms.ToTensor()
                                                           ]))
-    trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=0)
+    trainloader = DataLoader(trainset, batch_size=config.batch_size, shuffle=True, num_workers=0)
 
-    criterion = ContrastiveLoss(margin=Config.margin)
+    criterion = ContrastiveLoss(margin=config.margin)
     learning_rate = 1e-6
     optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
@@ -59,7 +60,7 @@ def train(aug, savemodel=False, model="model"):
     loss_history = []
     iteration_number= 0
 
-    for epoch in range(Config.train_number_epochs):
+    for epoch in range(config.train_number_epochs):
         for i, data in enumerate(trainloader,0):
             img0, img1 , label = data
             img0, img1 , label = Variable(img0).cuda(), Variable(img1).cuda() , Variable(label).cuda()
@@ -82,7 +83,7 @@ def train(aug, savemodel=False, model="model"):
         torch.save(net.state_dict(), model)
         print("Model saved as: " + model)
 
-def test(loadmodel=False, model="model"):
+def test(config, loadmodel=False, model="model"):
 
     net = SiameseNet(p1b=True).cuda()
 
@@ -90,12 +91,12 @@ def test(loadmodel=False, model="model"):
                       transform=transforms.Compose([transforms.Scale((128,128)),
                                                       transforms.ToTensor()
                                                       ]))
-    trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=2)
+    trainloader = DataLoader(trainset, batch_size=config.batch_size, shuffle=True, num_workers=2)
     testset = LFWDataset(test=True,
                      transform=transforms.Compose([transforms.Scale((128, 128)),
                                                       transforms.ToTensor()
                                                       ]))
-    testloader = DataLoader(testset, batch_size=Config.train_batch_size, shuffle=True, num_workers=2)
+    testloader = DataLoader(testset, batch_size=config.batch_size, shuffle=True, num_workers=2)
 
     if loadmodel:
         net.load_state_dict(torch.load(model))
@@ -110,7 +111,7 @@ def test(loadmodel=False, model="model"):
         output1, output2 = net(img0,img1)
         dist = F.pairwise_distance(output1, output2)
         for x,y in zip(dist, label):
-            if (x.data[0]>=Config.threshold and y.data[0]==1) or (x.data[0]<Config.threshold and y.data[0]==0):
+            if (x.data[0]>=config.threshold and y.data[0]==1) or (x.data[0]<config.threshold and y.data[0]==0):
                 trainright+=1
             else:
                 trainwrong+=1
@@ -127,7 +128,7 @@ def test(loadmodel=False, model="model"):
         output1, output2 = net(img0,img1)
         dist = F.pairwise_distance(output1, output2)
         for x,y in zip(dist, label):
-            if (x.data[0]>= Config.threshold and y.data[0]==1) or (x.data[0]< Config.threshold and y.data[0]==0):
+            if (x.data[0]>= config.threshold and y.data[0]==1) or (x.data[0]< config.threshold and y.data[0]==0):
                 testright+=1
             else:
                 testwrong+=1
@@ -139,8 +140,10 @@ def test(loadmodel=False, model="model"):
 def p1b():
     parser = argparse.ArgumentParser(description='Process loading or saving.')
     parser.add_argument('--aug', '-a', dest='aug', action='store_true', help='toggle data augmentation')
-    parser.add_argument('--margin', '-m', dest='margin', action='store', type=float, help='Set custom margin (default 10')
-    parser.add_argument('--threshold', '-t', dest='threshold', action='store', type=float, help='Set custom threshold')
+    parser.add_argument('--epochs', '-e', dest='epochs', default=30, action='store', type=int, help='training epochs')
+    parser.add_argument('--batchsize', '-b', dest='batchsize', default=64, action='store', type=int, help='training batch size')
+    parser.add_argument('--margin', '-m', dest='margin', default=10., action='store', type=float, help='Set custom margin (default 10')
+    parser.add_argument('--threshold', '-t', dest='threshold', default=20., action='store', type=float, help='Set custom threshold')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--load', dest='load', action='store',
                         type=str, help='File from which to load model')
@@ -149,15 +152,16 @@ def p1b():
 
     args = parser.parse_args()
 
-    if args.margin:
-	
+    c = Config(epochs=args.epochs, batch_size=args.batchsize, margin=args.margin, threshold=args.threshold)
+
+    print(c.margin, c.threshold, c.epochs, c.batch_size)
 
     if args.save:
         print("Training...")
-        train(args.aug, savemodel=True, model=args.save)
+        train(aug=args.aug, config=c, savemodel=True, model=args.save)
     if args.load:
         print("Testing...")
-        test(loadmodel=True, model=args.load)
+        test(config=c, loadmodel=True, model=args.load)
 
 
 if __name__ == "__main__":
