@@ -22,6 +22,7 @@ from augmentation import augmentation
 class Config():
     train_batch_size = 64
     train_number_epochs = 100
+    margin = 10
 
 def show_plot(iteration,loss, filename='loss.png', save=False):
     plt.figure(figsize=(10,4))
@@ -49,7 +50,7 @@ def train(aug, savemodel=False, model="model"):
                                                           ]))
     trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=0)
 
-    criterion = ContrastiveLoss(margin=10)
+    criterion = ContrastiveLoss(margin=Config.margin)
     learning_rate = 1e-6
     optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
@@ -108,7 +109,7 @@ def test(loadmodel=False, model="model"):
         output1, output2 = net(img0,img1)
         dist = F.pairwise_distance(output1, output2)
         for x,y in zip(dist, label):
-            if (x.data[0]>=11 and y.data[0]==1) or (x.data[0]<11 and y.data[0]==0):
+            if (x.data[0]>=Config.margin and y.data[0]==1) or (x.data[0]<Config.margin and y.data[0]==0):
                 trainright+=1
             else:
                 trainwrong+=1
