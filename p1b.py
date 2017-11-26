@@ -52,7 +52,7 @@ def train(aug, config, savemodel=False, model="model"):
                                                           ]))
     trainloader = DataLoader(trainset, batch_size=config.batch_size, shuffle=True, num_workers=0)
 
-    criterion = ContrastiveLoss(margin=config.margin)
+    loss_fcn = ContrastiveLoss(margin=config.margin)
     learning_rate = 1e-5
     optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
@@ -68,7 +68,7 @@ def train(aug, config, savemodel=False, model="model"):
             label = label.unsqueeze(1).float()
 
             optimizer.zero_grad()
-            loss = criterion(output1, output2, label)
+            loss = loss_fcn(output1, output2, label)
             loss.backward()
             optimizer.step()
             if i %10 == 0 :
@@ -80,7 +80,7 @@ def train(aug, config, savemodel=False, model="model"):
         if epoch % 5 == 0:
             torch.save(net.state_dict(), model + "_epoch_" + str(epoch) + '.w')
     #to see loss
-    show_plot(counter,loss_history, save=True)
+    show_plot(counter,loss_history, filename='p1b.png', save=True)
 
     if savemodel:
         torch.save(net.state_dict(), model)

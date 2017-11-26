@@ -49,7 +49,7 @@ def train(aug, savemodel=False, model="model"):
                                                           ]))
     trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=0)
 
-    criterion = nn.BCELoss()
+    loss_fcn = nn.BCELoss()
     learning_rate = 1e-6
     optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
@@ -65,7 +65,7 @@ def train(aug, savemodel=False, model="model"):
             label = label.unsqueeze(1).float()
 
             optimizer.zero_grad()
-            loss = criterion(output, label)
+            loss = loss_fcn(output, label)
             loss.backward()
             optimizer.step()
             if i %10 == 0 :
@@ -75,7 +75,7 @@ def train(aug, savemodel=False, model="model"):
                 loss_history.append(loss.data[0])
 
     #to see loss
-    show_plot(counter, loss_history, filename='bceloss_aug.png', save=True)
+    show_plot(counter, loss_history, filename='p1a.png', save=True)
 
     if savemodel:
         torch.save(net.state_dict(), model)
