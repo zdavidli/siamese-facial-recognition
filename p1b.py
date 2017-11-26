@@ -20,7 +20,7 @@ from ContrastiveLoss import ContrastiveLoss
 from augmentation import augmentation
 
 class Config():
-    def __init__(self, batch_size=64, epochs=30, margin=10, threshold=20):
+    def __init__(self, batch_size=64, epochs=30, margin=2, threshold=2):
         self.batch_size=batch_size
         self.epochs = epochs
         self.margin=margin
@@ -53,7 +53,7 @@ def train(aug, config, savemodel=False, model="model"):
     trainloader = DataLoader(trainset, batch_size=config.batch_size, shuffle=True, num_workers=0)
 
     criterion = ContrastiveLoss(margin=config.margin)
-    learning_rate = 1e-4
+    learning_rate = 1e-5
     optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
     counter = []
@@ -77,9 +77,8 @@ def train(aug, config, savemodel=False, model="model"):
                 counter.append(iteration_number)
                 loss_history.append(loss.data[0])
 
-        if epoch % 10 == 0:
+        if epoch % 5 == 0:
             torch.save(net.state_dict(), model + "_epoch_" + str(epoch) + '.w')
-            print("Saved: " + model + "_epoch_" + str(epoch) + '.w')
     #to see loss
     show_plot(counter,loss_history, save=True)
 
@@ -146,8 +145,8 @@ def p1b():
     parser.add_argument('--aug', '-a', dest='aug', action='store_true', help='toggle data augmentation')
     parser.add_argument('--epochs', '-e', dest='epochs', default=30, action='store', type=int, help='training epochs')
     parser.add_argument('--batchsize', '-b', dest='batchsize', default=64, action='store', type=int, help='training batch size')
-    parser.add_argument('--margin', '-m', dest='margin', default=10., action='store', type=float, help='Set custom margin (default 10')
-    parser.add_argument('--threshold', '-t', dest='threshold', default=20., action='store', type=float, help='Set custom threshold')
+    parser.add_argument('--margin', '-m', dest='margin', default=2., action='store', type=float, help='Set custom margin (default 10')
+    parser.add_argument('--threshold', '-t', dest='threshold', default=2., action='store', type=float, help='Set custom threshold')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--load', dest='load', action='store',
                         type=str, help='File from which to load model')
