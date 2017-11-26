@@ -102,7 +102,6 @@ def test(loadmodel=False, model="model"):
 
         output1, output2 = net(img0,img1)
         dist = F.pairwise_distance(output1, output2)
-        
         for x,y in zip(dist, label):
             if (x.data[0]>=11 and y.data[0]==1) or (x.data[0]<11 and y.data[0]==0):
                 trainright+=1
