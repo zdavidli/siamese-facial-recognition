@@ -33,14 +33,20 @@ def show_plot(iteration,loss, filename='loss.png', save=False):
         plt.savefig(filename)
         
         
-def train(savemodel=False, model="model"):
+def train(aug, savemodel=False, model="model"):
     
     net = SiameseNet(p1a=True).cuda()
     
-    trainset = LFWDataset(train=True,
-                      transform=transforms.Compose([augmentation, transforms.Scale((128,128)),
-                                                      transforms.ToTensor()
-                                                      ]))
+    if aug:
+        trainset = LFWDataset(train=True,
+                          transform=transforms.Compose([augmentation, transforms.Scale((128,128)),
+                                                          transforms.ToTensor()
+                                                          ]))
+    else:
+        trainset = LFWDataset(train=True,
+                          transform=transforms.Compose([transforms.Scale((128,128)),
+                                                          transforms.ToTensor()
+                                                          ]))
     trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=0)
 
     criterion = nn.BCELoss()
@@ -69,13 +75,13 @@ def train(savemodel=False, model="model"):
                 loss_history.append(loss.data[0])
    
     #to see loss
-    show_plot(counter,loss_history, save=True)
+    show_plot(counter, loss_history, filename='bceloss_aug.png', save=True)
             
     if savemodel:
         torch.save(net.state_dict(), model)
         print("Model saved as: " + model)
         
-def test(loadmodel=False, model="model"):
+def test(loadmodel=False, model="model",):
     
     net = SiameseNet(p1a=True).cuda()
     
@@ -129,6 +135,7 @@ def test(loadmodel=False, model="model"):
     
 def p1a():
     parser = argparse.ArgumentParser(description='Process loading or saving.')
+    parser.add_argument('--aug', dest='aug', action='store_true')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--load', dest='load', action='store',
                         type=str, help='File from which to load model')
@@ -138,7 +145,7 @@ def p1a():
     args = parser.parse_args()
     
     if args.save:
-        train(savemodel=True, model='p1a_aug')
+        train(aug = args.aug, savemodel=True, model='p1a_aug')
     if args.load:
         test(loadmodel=True, model='p1a_aug')
     

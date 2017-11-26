@@ -5,6 +5,9 @@ import torch.nn.functional as F
 
 class SiameseNet(nn.Module):
 
+    """
+    Defining Network
+    """
     def __init__(self, p1a=False, p1b=False):
         super(SiameseNet, self).__init__()
         if p1a and p1b or (not p1a and not p1b):
@@ -40,11 +43,15 @@ class SiameseNet(nn.Module):
             nn.BatchNorm2d(1024)
         )
 
+        #final fully connected layer only applied in p1a
         self.fc2 = nn.Sequential(
             nn.Linear(2*1024, 1),
             nn.Sigmoid()
         )
-
+    
+    """
+    Helper function for forward
+    """
     def forward_once(self, x):
         output = self.cnn(x)
         #flatten
@@ -52,12 +59,17 @@ class SiameseNet(nn.Module):
         output = self.fc1(output)
         return output
 
+    """
+    Forward pass
+    """
     def forward(self, input1, input2):
         output1 = self.forward_once(input1)
         output2 = self.forward_once(input2)
-#        print(f1, f2)
+        
+        #Return for p1a
         if self.p1a:
             output = self.fc2(torch.cat((output1, output2), 1))
             return output
-        else:
+        #Return for p1b
+        if self.p1b:
             return output1, output2

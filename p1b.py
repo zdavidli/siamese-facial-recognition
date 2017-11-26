@@ -9,7 +9,6 @@ import torch.optim as optim
 from skimage import transform as tf
 from PIL import Image
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
@@ -22,9 +21,10 @@ from augmentation import augmentation
 
 class Config():
     train_batch_size = 64
-    train_number_epochs = 30
+    train_number_epochs = 100
 
 def show_plot(iteration,loss, filename='loss.png', save=False):
+    plt.figure(figsize=(10,4))
     plt.plot(iteration,loss)
     plt.xlabel("Iterations")
     plt.ylabel("Loss")
@@ -44,7 +44,7 @@ def train(savemodel=False, model="model"):
                                                       ]))
     trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=0)
 
-    criterion = ContrastiveLoss()
+    criterion = ContrastiveLoss(margin=10)
     learning_rate = 1e-6
     optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
