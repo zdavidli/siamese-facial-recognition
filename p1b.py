@@ -53,7 +53,7 @@ def train(aug, config, savemodel=False, model="model"):
     trainloader = DataLoader(trainset, batch_size=config.batch_size, shuffle=True, num_workers=0)
 
     criterion = ContrastiveLoss(margin=config.margin)
-    learning_rate = 1e-6
+    learning_rate = 1e-4
     optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
     counter = []
@@ -76,6 +76,9 @@ def train(aug, config, savemodel=False, model="model"):
                 iteration_number +=10
                 counter.append(iteration_number)
                 loss_history.append(loss.data[0])
+	
+	if epoch % 10 == 0:
+		torch.save(net.state_dict(), model + str(epoch) + '.w')
     #to see loss
     show_plot(counter,loss_history, save=True)
 
