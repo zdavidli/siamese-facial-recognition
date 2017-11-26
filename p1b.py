@@ -76,9 +76,10 @@ def train(aug, config, savemodel=False, model="model"):
                 iteration_number +=10
                 counter.append(iteration_number)
                 loss_history.append(loss.data[0])
-	
-	if epoch % 10 == 0:
-		torch.save(net.state_dict(), model + str(epoch) + '.w')
+
+        if epoch % 10 == 0:
+            torch.save(net.state_dict(), model + "_epoch_" + str(epoch) + '.w')
+            print("Saved: " + model + "_epoch_" + str(epoch) + '.w')
     #to see loss
     show_plot(counter,loss_history, save=True)
 

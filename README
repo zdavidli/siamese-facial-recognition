@@ -4,11 +4,13 @@ Computer Vision HW 3
 
 Q1a. (without augmentation)
 
-I used 30 epochs -- the loss stabilizes within 30 epochs. A graph of my loss can be seen in bceloss.png.
+I used a learning rate of 1e-6.
+
+For this part, I used 30 epochs -- the loss stabilizes within 30 epochs. A graph of my loss can be seen in bceloss.png.
 Testing results:
     Loaded model: p1a
-    Accuracy on train set: 0.99
-    Accuracy on test set: 0.53
+    Accuracy on train set: 1.00
+    Accuracy on test set: 0.55
 
 Q1a.i. (with augmentation)
 This time, since loss took longer to stabilize (due to the random augmentation), I used 100 training epochs. 
@@ -16,29 +18,29 @@ A graph of my loss can be seen in bceloss_aug.png.
 Testing results:
     Loaded model: p1a_aug
     Accuracy on train set: 1.00 
-    Accuracy on test set: 0.53
+    Accuracy on test set: 0.54
 
 Q1a.ii.
 How well did part a work on the training data? On the test data? 
 
-The model appears to do very well when we test with training data but is basically indistinguishable
-from guessing on test data. It scores very close to 100% accuracy on training data but close to 50%
-on test data. This makes me think it's overfitting and just memorizing the training
-data instead of actually learning structural similarities in the faces.
+    The model appears to do very well when we test with training data but is basically indistinguishable
+    from guessing on test data. It scores very close to 100% accuracy on training data but close to 50%
+    on test data. This makes me think it's overfitting and just memorizing the training
+    data instead of actually learning structural similarities in the faces.
 
 Any ideas why or why not it worked well or didn't? Answer this question below in part c.
 
-In some of the training examples I saw, there are actually multiple faces in the image, and 
-the face may show up anywhere in the image (on the side, in the middle, etc). If we cleaned up the data
-a little and cropped to a box around the face, it might be easier to actually learn facial features
-and increase our accuracy. 
+    In some of the training examples I saw, there are actually multiple faces in the image, and 
+    the face may show up anywhere in the image (on the side, in the middle, etc). If we cleaned up the data
+    a little and cropped to a box around the face, it might be easier to actually learn facial features
+    and increase our accuracy. 
 
 
 Model weights link: https://drive.google.com/drive/folders/1KNwRnfaCcdFLN7hd97wflvBBGB8srl6Z?usp=sharing
 
-Q1b.
+Q1b. (without augmentation)
 
-Without Augmentation:
+To speed up training time, I used a learning rate of 1e-4, compared to 1e-6 in part a.
 
 I used 30 epochs -- the loss stabilizes within 30 epochs. A graph of my loss can be seen in
 contrastive.png.
@@ -48,4 +50,9 @@ contrastive.png.
         Accuracy on train set: 0.98
         Accuracy on test set: 0.51
 
-With Augmentation:
+
+Q1b.i. (with augmentation)
+
+I used 
+
+
