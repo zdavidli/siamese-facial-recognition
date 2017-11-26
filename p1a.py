@@ -26,7 +26,8 @@ class Config():
 def show_plot(iteration,loss, filename='loss.png', save=False):
     plt.plot(iteration,loss)
     plt.xlabel("Iterations")
-    plt.ylabel("Loss")
+    plt.ylabel("Binary Cross Entropy Loss")
+    plt.title("BCELoss over {} Training Epochs".format(Config.train_number_epochs))
 #     plt.show()
     if save:
         plt.savefig(filename)
