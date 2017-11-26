@@ -37,7 +37,7 @@ def train(savemodel=False, model="model"):
     net = SiameseNet(p1a=True).cuda()
     
     trainset = LFWDataset(train=True,
-                      transform=transforms.Compose([data_aug, transforms.Scale((128,128)),
+                      transform=transforms.Compose([augmentation, transforms.Scale((128,128)),
                                                       transforms.ToTensor()
                                                       ]))
     trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=0)
