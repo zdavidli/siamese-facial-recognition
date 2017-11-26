@@ -33,15 +33,20 @@ def show_plot(iteration,loss, filename='loss.png', save=False):
         plt.savefig(filename)
 
 
-def train(savemodel=False, model="model"):
+def train(aug, savemodel=False, model="model"):
 
     net = SiameseNet(p1b=True).cuda()
 
-    trainset = LFWDataset(train=True,
-                      transform=transforms.Compose([augmentation,
-                                                    transforms.Scale((128,128)),
-                                                    transforms.ToTensor()
-                                                      ]))
+    if aug:
+        trainset = LFWDataset(train=True,
+                          transform=transforms.Compose([augmentation, transforms.Scale((128,128)),
+                                                          transforms.ToTensor()
+                                                          ]))
+    else:
+        trainset = LFWDataset(train=True,
+                          transform=transforms.Compose([transforms.Scale((128,128)),
+                                                          transforms.ToTensor()
+                                                          ]))
     trainloader = DataLoader(trainset, batch_size=Config.train_batch_size, shuffle=True, num_workers=0)
 
     criterion = ContrastiveLoss(margin=10)
@@ -131,6 +136,7 @@ def test(loadmodel=False, model="model"):
 
 def p1b():
     parser = argparse.ArgumentParser(description='Process loading or saving.')
+    parser.add_argument('--aug', dest='aug', action='store_true')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--load', dest='load', action='store',
                         type=str, help='File from which to load model')
@@ -140,8 +146,10 @@ def p1b():
     args = parser.parse_args()
 
     if args.save:
-        train(savemodel=True, model=args.save)
+        print("Training...")
+        train(args.aug, savemodel=True, model=args.save)
     if args.load:
+        print("Testing...")
         test(loadmodel=True, model=args.load)
 
 
