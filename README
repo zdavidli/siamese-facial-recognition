@@ -13,6 +13,8 @@ Testing results:
     Accuracy on test set: 0.55
 
 Q1a.i. (with augmentation)
+
+With augmentation, I decided to allow each transform a 80% chance to occur (independently).
 This time, since loss took longer to stabilize (due to the random augmentation), I used 100 training epochs. 
 A graph of my loss can be seen in bceloss_aug.png.
 Testing results:
@@ -40,7 +42,7 @@ Model weights link: https://drive.google.com/drive/folders/1KNwRnfaCcdFLN7hd97wf
 
 Q1b. (without augmentation)
 
-To speed up training time, I used a learning rate of 1e-4, compared to 1e-6 in part a.
+To speed up training time, I used a learning rate of 1e-5, compared to 1e-6 in part a.
 
 I used 30 epochs -- the loss stabilizes within 30 epochs. A graph of my loss can be seen in
 contrastive.png.
@@ -50,9 +52,9 @@ contrastive.png.
         Accuracy on train set: 0.98
         Accuracy on test set: 0.51
 
-
 Q1b.i. (with augmentation)
 
-I used 
+I used the same augmentation as before.
+The loss seemed to stabilize around 50 epochs -- A graph of my loss can be seen in...
 
 
