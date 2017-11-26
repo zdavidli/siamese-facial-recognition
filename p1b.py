@@ -53,7 +53,7 @@ def train(aug, config, savemodel=False, model="model"):
     trainloader = DataLoader(trainset, batch_size=config.batch_size, shuffle=True, num_workers=0)
 
     loss_fcn = ContrastiveLoss(margin=config.margin)
-    learning_rate = 1e-5
+    learning_rate = 5e-6
     optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
     counter = []
