@@ -2,12 +2,16 @@ David Li
 dzli@jhu.edu
 Computer Vision HW 3
 
+I used https://github.com/harveyslash/Facial-Similarity-with-Siamese-Networks-in-Pytorch as a jumping off point
+to learn PyTorch and understand Siamese Networks, so some of the code may seem similar. Although it was very useful,
+our project is very different from the example, so all of the code submitted was written by myself.
+
 Q1a. (without augmentation)
 
 I used a learning rate of 1e-6.
 For this part, I used 30 epochs -- the loss stabilizes within 30 epochs. A graph of my loss can be seen in bceloss.png.
 Testing results:
-    Loaded model: p1a
+    Loaded model: p1a.w
     Accuracy on train set: 1.00
     Accuracy on test set: 0.55
 
@@ -19,7 +23,7 @@ were done using skimage library functions.
 This time, since loss took longer to stabilize (due to the random augmentation), I used 100 training epochs. 
 A graph of my loss can be seen in bceloss_aug.png.
 Testing results:
-    Loaded model: p1a_aug
+    Loaded model: p1a_aug.w
     Accuracy on train set: 1.00 
     Accuracy on test set: 0.54
 
@@ -52,13 +56,40 @@ until we get to 25 epochs of training. Even so, the accuracy on the test set doe
 at 50% the whole time. A graph of my loss can be seen in contrastive.png.
 
     Testing results:
-        Loaded model: p1b
+        Loaded model: p1b.w
         Accuracy on train set: 0.87
         Accuracy on test set: 0.50
 
 Q1b.i. (with augmentation)
 
-I used the same augmentation as before.
-The loss seemed to stabilize around 50 epochs -- A graph of my loss can be seen in...
+I used the same augmentation as in part a.
+The loss seemed to stabilize around 10 epochs, but again, having longer training time led to better accuracy on
+the training set (although possibly overfitting). However, the accuracy on the test set did not increase (like before).
+A graph of the loss can be seen in contrastive_aug.png
 
+The following results are from the model after 30 epochs of training.
 
+    Testing results:
+        Loaded model: p1b_aug.w
+        Accuracy on train set: 0.75
+        Accuracy on test set: 0.45
+        
+Q1b.ii. How did contrastive loss do on the training data? Testing data?
+
+Contrastive loss seemed to do a lot worse than Binary Cross Entropy loss on the training data,
+but this might be an indicator that the model with BCELoss was strongly overfitting.
+
+It was more difficult to get high accuracy on the testing set with contrastive loss as well,
+since it hovered around 50%, the same as random guessing. I'm not actually sure why this was the case,
+since I know some of my classmates were able to get 60% accuracy or higher on testing data.
+
+Q1c.
+
+In my experience, the BCELoss model performed better than the Contrastive Loss model, since it had higher
+train set accuracy and test set accuracy in both the non-augmented and augmented models. However,
+the BCELoss model seemed to overfit quite heavily and give us a very high training accuracy with more or less
+random guessing on the testing set. As mentioned in my answer to part a, the dataset wasn't very clean
+since there were images with multiple people and the faces were not always centered. For instance,
+in http://yann.lecun.com/exdb/publis/pdf/chopra-05.pdf, the example images are all centered.
+If we cleaned up the data a little and cropped to a box around the face, I suspect it would be easier to actually 
+learn facial features and increase our accuracy. 
