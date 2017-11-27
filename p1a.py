@@ -135,7 +135,7 @@ def test(loadmodel=False, model="model",):
 
 def p1a():
     parser = argparse.ArgumentParser(description='Process loading or saving.')
-    parser.add_argument('--aug', dest='aug', action='store_true')
+    parser.add_argument('--aug', dest='aug', action='store_true', help='Toggle data augmentation')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--load', dest='load', action='store',
                         type=str, help='File from which to load model')
