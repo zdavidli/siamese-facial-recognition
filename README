@@ -67,7 +67,8 @@ I used the same augmentation as in part a. To speed up training time, I used a l
 compared to 1e-6 in part a. I also used a margin of 2.0 during training and a threshold of 10.0 during testing.
 
 After 30 epochs, the loss wasn't too stable, but was pretty low. The loss stabilized closer to 40 epochs, and
-the loss graph is reflected in the two images contrastive_aug1.png and contrastive_aug2.png
+the loss graph is reflected in the two images contrastive_aug1.png and contrastive_aug2.png (I wasn't able
+to generate a loss graph all at once).
 
 The following results are from the model after 30 epochs of training.
 
@@ -76,12 +77,17 @@ The following results are from the model after 30 epochs of training.
         Accuracy on train set: 0.74
         Accuracy on test set: 0.67
         
+After 10 more epochs (40 total), I had the following results.
+    Testing results:
+        Loaded model: p1b_aug.w
+        Accuracy on train set: 0.77
+        Accuracy on test set: 0.67        
+        
 Q1b.ii. How did contrastive loss do on the training data? Testing data?
 
 Contrastive loss did quite well (better than BCELoss) when testing on both the training and test splits.
 In particular, in the augmented version, I achieved almost 67% accuracy on the test set with similar accuracy on
 the training set, indicating that we probably were not overfitting heavily as we were in part a.
-
 
 Q1c.
  
