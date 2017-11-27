@@ -40,6 +40,8 @@ def train(aug, config, savemodel=False, model="model"):
 
     net = SiameseNet(p1b=True).cuda()
 
+    #net.load_state_dict(torch.load('p1b_epoch_30.w'))
+
     if aug:
         trainset = LFWDataset(train=True,
                           transform=transforms.Compose([augmentation, transforms.Scale((128,128)),
@@ -114,7 +116,7 @@ def test(config, loadmodel=False, model="model"):
         output1, output2 = net(img0,img1)
         dist = F.pairwise_distance(output1, output2)
         for x,y in zip(dist, label):
-            if (x.data[0]>=config.threshold and y.data[0]==1) or (x.data[0]<config.threshold and y.data[0]==0):
+            if (x.data[0]>=config.threshold and y.data[0]==0) or (x.data[0]<config.threshold and y.data[0]==1):
                 trainright+=1
             else:
                 trainwrong+=1
@@ -131,7 +133,7 @@ def test(config, loadmodel=False, model="model"):
         output1, output2 = net(img0,img1)
         dist = F.pairwise_distance(output1, output2)
         for x,y in zip(dist, label):
-            if (x.data[0]>= config.threshold and y.data[0]==1) or (x.data[0]< config.threshold and y.data[0]==0):
+            if (x.data[0]>= config.threshold and y.data[0]==0) or (x.data[0]< config.threshold and y.data[0]==1):
                 testright+=1
             else:
                 testwrong+=1
