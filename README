@@ -2,9 +2,66 @@ David Li
 dzli@jhu.edu
 Computer Vision HW 3
 
-I used https://github.com/harveyslash/Facial-Similarity-with-Siamese-Networks-in-Pytorch as a jumping off point
-to learn PyTorch and understand Siamese Networks, so some of the code may seem similar. Although it was very useful,
-our project is very different from the example, so all of the code submitted was written by myself.
+Enclosed files:
+    Images: bceloss_aug.png
+            bceloss.png
+            contrastive_aug1.png
+            contrastive_aug2.png
+            contrastive.png
+    Python files:
+            augmentation.py
+            ContrastiveLoss.py
+            LFWDataset.py
+            SiameseNet.py
+            p1a.py
+            p1b.py
+    Test files:
+            test.txt
+            train.txt
+    Dataset download script:
+            get_data.sh
+            
+
+usage: p1a.py [-h] [--aug] (--load LOAD | --save SAVE)
+
+Process loading or saving.
+
+optional arguments:
+  -h, --help   show this help message and exit
+  --aug        Toggle data augmentation
+  --load LOAD  File from which to load model
+  --save SAVE  File to save model to
+
+usage: p1b.py [-h] [--aug] [--epochs EPOCHS] [--batchsize BATCHSIZE]
+              [--margin MARGIN] [--threshold THRESHOLD]
+              (--load LOAD | --save SAVE)
+
+Process loading or saving.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --aug, -a             toggle data augmentation
+  --epochs EPOCHS, -e EPOCHS
+                        training epochs
+  --batchsize BATCHSIZE, -b BATCHSIZE
+                        training batch size
+  --margin MARGIN, -m MARGIN
+                        Set custom margin (default 10
+  --threshold THRESHOLD, -t THRESHOLD
+                        Set custom threshold
+  --load LOAD           File from which to load model
+  --save SAVE           File to save model to
+
+
+Model weights link: https://drive.google.com/open?id=1KNwRnfaCcdFLN7hd97wflvBBGB8srl6Z
+Non-augmented weight files: p1a.w, p1b.w
+Augmented weight files:     p1a_aug.w, p1b_aug.w
+
+
+Note:
+    I used https://github.com/harveyslash/Facial-Similarity-with-Siamese-Networks-in-Pytorch as a jumping off point
+    to learn PyTorch and understand Siamese Networks, so some of the code may seem similar. Although it was very useful,
+    our project is very different from the example, so all of the code submitted was written by myself.
 
 Q1a. (without augmentation)
 
@@ -45,7 +102,6 @@ Any ideas why or why not it worked well or didn't? Answer this question below in
     and increase our accuracy. 
 
 
-Model weights link: https://drive.google.com/drive/folders/1KNwRnfaCcdFLN7hd97wflvBBGB8srl6Z?usp=sharing
 
 Q1b. (without augmentation)
 
