@@ -63,7 +63,9 @@ respectively, but at 30 epochs, the train and test accuracy was 0.94 and 0.58.
 
 Q1b.i. (with augmentation)
 
-I used the same augmentation as in part a.
+I used the same augmentation as in part a. To speed up training time, I used a learning rate of 5e-5, 
+compared to 1e-6 in part a. I also used a margin of 2.0 during training and a threshold of 10.0 during testing.
+
 After 30 epochs, the loss wasn't too stable, but was pretty low. The loss stabilized closer to 40 epochs, and
 the loss graph is reflected in the two images contrastive_aug1.png and contrastive_aug2.png
 
@@ -76,4 +78,20 @@ The following results are from the model after 30 epochs of training.
         
 Q1b.ii. How did contrastive loss do on the training data? Testing data?
 
+Contrastive loss did quite well (better than BCELoss) when testing on both the training and test splits.
+In particular, in the augmented version, I achieved almost 67% accuracy on the test set with similar accuracy on
+the training set, indicating that we probably were not overfitting heavily as we were in part a.
+
+
 Q1c.
+ 
+In my experience, the Contrastive Loss model performed better than the BCELoss model, since it had higher
+train set accuracy and test set accuracy in both the non-augmented and augmented models. In fact, the non-augmented
+contrastive loss model had better test accuracy than the augmented BCELoss model. 
+The BCELoss model seemed to overfit quite heavily and give us a very high training accuracy with close to
+random guessing on the testing set. As mentioned in my answer to part a, the dataset wasn't very clean
+since there were images with multiple people and the faces were not always centered. For instance,
+in http://yann.lecun.com/exdb/publis/pdf/chopra-05.pdf, the example images are all centered.
+If we cleaned up the data a little and cropped to a box around the face, I suspect it would be easier to actually 
+learn facial features and increase our accuracy. Also, if we had a larger dataset, I think we would
+see better results since it's basically always good to have more training data.
