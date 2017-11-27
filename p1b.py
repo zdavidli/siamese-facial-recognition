@@ -40,8 +40,6 @@ def train(aug, config, savemodel=False, model="model"):
 
     net = SiameseNet(p1b=True).cuda()
 
-    #net.load_state_dict(torch.load('p1b_epoch_30.w'))
-
     if aug:
         trainset = LFWDataset(train=True,
                           transform=transforms.Compose([augmentation, transforms.Scale((128,128)),
