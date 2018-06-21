@@ -2,8 +2,6 @@ David Li
 dzli@jhu.edu
 Computer Vision HW 3
 
-WEIGHTS: https://drive.google.com/open?id=1KNwRnfaCcdFLN7hd97wflvBBGB8srl6Z
-
 Enclosed files:
     Images: bceloss_aug.png
             bceloss.png
