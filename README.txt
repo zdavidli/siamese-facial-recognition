@@ -1,6 +1,5 @@
 David Li
 dzli@jhu.edu
-Computer Vision HW 3
 
 Enclosed files:
     Images: bceloss_aug.png
